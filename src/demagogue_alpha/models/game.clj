@@ -45,13 +45,14 @@
       (iterate play-turn (make-players n)))))
 
 (defn play-turn [ps]
-    (let [p      (add-influence (last ps) ps (rhetoric-influence-owed (last ps))) 
-          others (butlast ps)] 
-    (take-action p others)))
+  (let [[p & others] ps]
+    (take-action 
+      (add-influence p ps (rhetoric-influence-owed p)) 
+      others)))
 
 (defn take-action [p others]
   (let [choice (rand-nth (keys costs))]   
-    (conj others 
+    (conj (into [] others) 
     (if (< (costs choice) (:influence p))
         (choose-card p choice)
         (if (not (empty? (:hand p))) 
