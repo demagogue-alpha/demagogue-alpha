@@ -18,23 +18,17 @@
 
 (defn choose-card [p choice]
   "A player may spend influence to add a card to their hand."
-  (Player. (:name p)
-           (- (:influence p) (costs choice)) 
-           (:played p) 
-           (conj (:hand p) choice)))
+  (assoc p :influence (- (:influence p) (costs choice))
+           :hand      (conj (:hand p) choice)))
 
 (defn play-card [p choice]
-  (Player. (:name p)
-           (:influence p)
-           (conj (:played p) choice)
-           (remove-first choice (:hand p))))
+  "Take a card from the hand and play it."
+  (assoc p :played (conj (:played p) choice)
+           :hand   (remove-first choice (:hand p))))
 
 (defn add-influence [p ps n]
   "Give n influence to player p"
-  (Player. (:name p)
-           (+ (:influence p) (min n (remaining-influence ps))) 
-           (:played p)
-           (:hand p)))
+  (assoc p :influence (+ (:influence p) (min n (remaining-influence ps)))))
 
 (defn rhetoric-influence-owed [p]
    (count (filter #(= % :rhetoric) (:played p)))) 
