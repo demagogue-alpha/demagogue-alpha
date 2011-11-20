@@ -29,10 +29,10 @@
            (conj (:played p) choice)
            (remove-first choice (:hand p))))
 
-(defn add-influence [p n]
+(defn add-influence [p ps n]
   "Give n influence to player p"
   (Player. (:name p)
-           (+ (:influence p) n)
+           (+ (:influence p) (min n (remaining-influence ps))) 
            (:played p)
            (:hand p)))
 
@@ -51,9 +51,7 @@
       (iterate play-turn (make-players n)))))
 
 (defn play-turn [ps]
-    (let [p      (add-influence (last ps) 
-                   (min (rhetoric-influence-owed (last ps)) 
-                        (remaining-influence ps))) 
+    (let [p      (add-influence (last ps) ps (rhetoric-influence-owed (last ps))) 
           others (butlast ps)] 
     (take-action p others)))
 
