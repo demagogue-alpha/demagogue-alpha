@@ -60,9 +60,11 @@
 (defn take-action [p others]
   (let [choice (rand-nth (keys costs))]   
     (conj others 
-      (if (< (costs choice) (:influence p))
+    (if (< (costs choice) (:influence p))
         (choose-card p choice)
-        (play-card p (rand-nth (:hand p)))))))
+        (if (not (empty? (:hand p))) 
+           (play-card p (rand-nth (:hand p))) 
+           p)))))
 
 (defn run []
   (let [batch (take 15 (play-game 3))]
